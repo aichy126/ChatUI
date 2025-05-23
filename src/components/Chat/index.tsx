@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { ConfigProvider, ConfigContextType } from '../ConfigProvider';
-import { Navbar, NavbarProps } from '../Navbar';
+import { getIOSMajorVersion, isSafari } from '../../utils/ua';
+import { ComposerHandle, ComposerProps, Composer as DComposer } from '../Composer';
+import { ConfigContextType, ConfigProvider } from '../ConfigProvider';
 import {
   MessageContainer,
-  MessageContainerProps,
   MessageContainerHandle,
+  MessageContainerProps,
 } from '../MessageContainer';
+import { Navbar, NavbarProps } from '../Navbar';
 import { QuickReplies, QuickReplyItemProps } from '../QuickReplies';
-import { Composer as DComposer, ComposerProps, ComposerHandle } from '../Composer';
-import { isSafari, getIOSMajorVersion } from '../../utils/ua';
 
 export type ChatProps = Omit<ComposerProps, 'onFocus' | 'onChange' | 'onBlur'> &
   ConfigContextType &
@@ -178,6 +178,7 @@ export const Chat = React.forwardRef<HTMLDivElement, ChatProps>((props, ref) => 
     rightAction,
     Composer = DComposer,
     isX,
+    nearBottomThreshold,
   } = props;
   const [currentColorScheme, setCurrentColorScheme] = useState<'light' | 'dark'>('light');
 
@@ -252,6 +253,7 @@ export const Chat = React.forwardRef<HTMLDivElement, ChatProps>((props, ref) => 
           onScroll={onScroll}
           onBackBottomShow={onBackBottomShow}
           onBackBottomClick={onBackBottomClick}
+          nearBottomThreshold={nearBottomThreshold}
         />
         <div className="ChatFooter">
           {renderQuickReplies ? (

@@ -1,11 +1,11 @@
 /* eslint-disable no-underscore-dangle */
-import React, { useState, useEffect, useRef, useCallback, useImperativeHandle } from 'react';
-import { PullToRefresh, PullToRefreshHandle, ScrollToEndOptions } from '../PullToRefresh';
-import { Message, MessageProps } from '../Message';
-import { BackBottom } from '../BackBottom';
+import React, { useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import canUse from '../../utils/canUse';
-import throttle from '../../utils/throttle';
 import getToBottom from '../../utils/getToBottom';
+import throttle from '../../utils/throttle';
+import { BackBottom } from '../BackBottom';
+import { Message, MessageProps } from '../Message';
+import { PullToRefresh, PullToRefreshHandle, ScrollToEndOptions } from '../PullToRefresh';
 
 const listenerOpts = canUse('passiveListener') ? { passive: true } : false;
 
@@ -19,6 +19,7 @@ export interface MessageContainerProps {
   renderBeforeMessageList?: () => React.ReactNode;
   onBackBottomShow?: () => void;
   onBackBottomClick?: () => void;
+  nearBottomThreshold?: number;
 }
 
 export interface MessageContainerHandle {
@@ -43,6 +44,7 @@ export const MessageContainer = React.forwardRef<MessageContainerHandle, Message
       renderMessageContent,
       onBackBottomShow,
       onBackBottomClick,
+      nearBottomThreshold = 2,
     } = props;
 
     const [showBackBottom, setShowBackBottom] = useState(false);
@@ -126,7 +128,7 @@ export const MessageContainer = React.forwardRef<MessageContainerHandle, Message
       if (lastMessage.position === 'right') {
         // 自己发的消息，强制滚动到底部
         scrollToEnd({ force: true });
-      } else if (isNearBottom(wrapper, 2)) {
+      } else if (isNearBottom(wrapper, nearBottomThreshold)) {
         const animated = !!wrapper.scrollTop;
         scrollToEnd({ animated, force: true });
       } else {
